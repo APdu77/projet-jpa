@@ -3,6 +3,7 @@ package fr.diginamic.entites;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +19,7 @@ public class Pays {
 
 	@Id
 	//@GeneratedValue(strategy = GenerationType.TABLE)
+	@Column(unique=true)
 	private String cio;
 	private String iso;
 	private String libelleInt;

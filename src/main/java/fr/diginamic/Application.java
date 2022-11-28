@@ -38,11 +38,11 @@ public class Application {
 		// Path path = Paths.get(filePath);
 
 		List<String> lines = Traitement.extraireLignesUTF("./src/main/resources/athlete_epreuves.csv");
-		List<String> linesPays = Traitement.extraireLignesWin("./src/main/resources/wikipedia-iso-country-codes.csv");
+		//List<String> linesPays = Traitement.extraireLignesWin("./src/main/resources/wikipedia-iso-country-codes.csv");
 		// Path path = Paths.get("./athlete_epreuves.csv");
 
 		/*
-		 * Creation de la liste contenant toutes les lignes du fichier csv
+		 * Creation de la liste contenant toutes les lignes du fichier cs
 		 * 
 		 */
 //		List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -57,86 +57,103 @@ public class Application {
 //		linesPays.remove(0);
 //		System.out.println(linesPays.get(0));
 //		//lignes = FileUtils.readLines(pathPays, "windows-1252");
-				
+
 		EntityManagerFactory entManFac = Persistence.createEntityManagerFactory("app_jo");
 		EntityManager entMan = entManFac.createEntityManager();
 		EntityTransaction trans = entMan.getTransaction();
-		//trans.begin();
+		// trans.begin();
 
-		
 		/*
-		 * Instanciation de la variable qui contiendra tou
-		 * arguments
+		 * Instanciation de la variable qui contiendra tou arguments
 		 */
 
-		for (int i = 0; i < 200; i++) {
+		for (int i = 0; i < 300; i++) {
 			trans.begin();
+			// if (i < linesPays.size()) {
+
+			// }
+
 			Athlete athlete = Splitteur.ajouterAthlete(lines.get(i));
-			InsertionBDD.ajouterAthlete(entMan, athlete);
+			athlete = InsertionBDD.ajouterAthlete(entMan, athlete);
+			// athlete.getNationalites().add(pays);
+
+			Pays pays = Splitteur.ajouterPays(lines.get(i));
+			pays = InsertionBDD.ajouterPays(entMan, pays);
+			System.out.println("avant ajout" + " " + pays.getMembres());
+			System.out.println(athlete);
+			// pays.getMembres().add(athlete);
+			if (!pays.getMembres().contains(athlete)) {
+				pays.getMembres().add(athlete);
+			}
+			// System.out.println("apres ajout et avant supp doubon"+" "+pays.getMembres());
+			// Doublon.supprimerAthlete(pays.getMembres());
+			System.out.println("apres supp doubon" + " " + pays.getMembres());
 
 			Equipe equipe = Splitteur.ajouterEquipe(lines.get(i));
 			equipe = InsertionBDD.ajouterEquipe(entMan, equipe);
-			equipe.getAthletes().add(athlete);
-			Doublon.supprimerAthlete(equipe.getAthletes());
-			
+			// System.out.println("avant ajout"+" "+equipe.getAthletes());
+			// System.out.println(athlete);
+			// System.out.println(equipe.getAthletes().contains(athlete));
+			if (!equipe.getAthletes().contains(athlete)) {
+				equipe.getAthletes().add(athlete);
+			}
+			// equipe.getAthletes().add(athlete);
+			// Doublon.supprimerAthlete(equipe.getAthletes());
+			// System.out.println("apres supp doubon"+" "+equipe.getAthletes());
+			// equipe.getAthletes().add(athlete);
+			// Doublon.supprimerAthlete(equipe.getAthletes());
+
 			Sport sport = Splitteur.ajouterSport(lines.get(i));
 			InsertionBDD.ajouterSport(entMan, sport);
-			
-			SessionJO jO = Splitteur.ajouterJO(lines.get(i));
-			//InsertionBDD.ajouterEquipeJO(entMan, equipe, jO);
-			//InsertionBDD.ajouterJO(entMan, jO);
-			//InsertionBDD.ajouterJO(entMan, jO, equipe);
-			System.out.println(jO.getLibelle()+" "+jO.getId());
-			System.out.println(equipe.getLibelle()+" "+equipe.getId());
-			jO = InsertionBDD.extraireJO(entMan, jO);
-			//InsertionBDD.ajouterEquipeJO(entMan, equipe, jO);
-			jO.getEquipes();
-			System.out.println(jO.getEquipes());
-			System.out.println(jO.getEquipes().contains(equipe));
-			jO.getEquipes().add(equipe);//maitre
-			jO.getSports().add(sport);
-			System.out.println(lines.get(i));
-			System.out.println(jO.getEquipes());
-			System.out.println(jO.getEquipes().contains(equipe));
-			System.out.println(jO.getLibelle()+" "+jO.getId());
-			System.out.println(equipe.getLibelle()+" "+equipe.getId());
 
-			Doublon.supprimerEquipe(jO.getEquipes());
-			
+			SessionJO jO = Splitteur.ajouterJO(lines.get(i));
+			// InsertionBDD.ajouterEquipeJO(entMan, equipe, jO);
+			// InsertionBDD.ajouterJO(entMan, jO);
+			// InsertionBDD.ajouterJO(entMan, jO, equipe);
+			System.out.println(jO.getLibelle() + " " + jO.getId());
+			System.out.println(equipe.getLibelle() + " " + equipe.getId());
+			jO = InsertionBDD.extraireJO(entMan, jO);
+			// InsertionBDD.ajouterEquipeJO(entMan, equipe, jO);
+			// jO.getEquipes();
+			System.out.println(jO.getEquipes());
+			System.out.println(jO.getEquipes().contains(equipe));
+			// jO.getEquipes().add(equipe);//maitre
+			// jO.getSports().add(sport);
+			System.out.println(lines.get(i));
+			System.out.println(jO.getEquipes().contains(equipe));
+
+			if (!jO.getSports().contains(sport)) {
+				jO.getSports().add(sport);
+			}
+			if (!jO.getEquipes().contains(equipe)) {
+				jO.getEquipes().add(equipe);
+			}
+
+			// Doublon.supprimerEquipe(jO.getEquipes());
+			// Doublon.supprimerSport(jO.getSports());
 //			for (int j=0; j < jO.getEquipes().size() ;j++)	{
 //				if (jO.getEquipes().size()>=2 && jO.getEquipes().get(jO.getEquipes().size()-1).equals(jO.getEquipes().get(jO.getEquipes().size()-2))  ) 	{
 //					System.out.println(jO.getEquipes().get(jO.getEquipes().size()-1).equals(jO.getEquipes().get(jO.getEquipes().size()-2)));
 //					jO.getEquipes().remove(jO.getEquipes().size()-1);
 //				}				
 //			}
-			
-			
+
 			System.out.println(jO.getEquipes());
 			System.out.println("--------------------------------------------------------");
-			
 
-			//jO.getSports().add(sport);
-			
 			Epreuve epreuve = Splitteur.ajouterEpreuve(lines.get(i));
-			//epreuve.setSport(sport);
+			// epreuve.setSport(sport);
 			InsertionBDD.ajouterEpreuve(entMan, epreuve, sport);
-
-			
-
-			if (i < linesPays.size()) {
-				Pays pays = Splitteur.ajouterPays(linesPays.get(i));
-				//pays.getMembres().add(athlete);
-				InsertionBDD.ajouterPays(entMan, pays);
-			}
 
 			Medaille medaille = Splitteur.ajouterMedaille(lines.get(i));
 //			medaille.setjO(jO);
 //			medaille.setEpreuve(epreuve);
-			InsertionBDD.ajouterMedaille(entMan, medaille, jO, epreuve);
+			medaille = InsertionBDD.ajouterMedaille(entMan, medaille, jO, epreuve);
+			medaille.getChampions().add(athlete);
 
 			trans.commit();
 		}
 
-		//trans.commit();
+		// trans.commit();
 	}
 }

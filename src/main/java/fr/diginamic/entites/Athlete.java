@@ -55,10 +55,6 @@ public class Athlete {
 	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof Athlete) && ((Athlete) obj).getNom().equals(nom) ;
-//		&& ((Athlete) obj).getGenre() == genre
-//				&& ((Athlete) obj).getAge() == age && ((Athlete) obj).getTaille() == taille
-//				&& ((Athlete) obj).getPoids() == poids 
-//		&& ((Athlete) obj).getCio() == cio;
 	}
 
 	@Override

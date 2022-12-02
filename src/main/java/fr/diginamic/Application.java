@@ -3,10 +3,12 @@ package fr.diginamic;
 import java.io.IOException;
 import java.util.List;
 
+import javax.persistence.Embeddable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import fr.diginamic.entites.Athlete;
 import fr.diginamic.entites.Epreuve;
@@ -15,6 +17,8 @@ import fr.diginamic.entites.Medaille;
 import fr.diginamic.entites.Pays;
 import fr.diginamic.entites.SessionJO;
 import fr.diginamic.entites.Sport;
+import fr.diginamic.entites.TraductionEpreuve;
+import fr.diginamic.entites.TraductionSport;
 import fr.diginamic.services.Doublon;
 import fr.diginamic.services.InsertionBDD;
 import fr.diginamic.services.Splitteur;
@@ -38,9 +42,18 @@ public class Application {
 		// Path path = Paths.get(filePath);
 
 		List<String> lines = Traitement.extraireLignesUTF("./src/main/resources/athlete_epreuves.csv");
-		//List<String> linesPays = Traitement.extraireLignesWin("./src/main/resources/wikipedia-iso-country-codes.csv");
+		List<String> linesTradSport = Traitement.extraireLignesUTF("./src/main/resources/liste des sports.csv");
+		List<String> linesTradEpreuve = Traitement.extraireLignesUTF("./src/main/resources/liste_des_epreuves.csv");
+		//List<String> linesTradSport = Traitement.extraireLignesWin("./src/main/resources/liste des sports.csv");
 		// Path path = Paths.get("./athlete_epreuves.csv");
 
+		System.out.println(linesTradSport.size());
+		System.out.println(linesTradEpreuve.size());
+		//LinesTraduction = linesTradSport.addAll(linesTradEpreuve);
+		System.out.println(linesTradSport.size());
+		System.out.println(linesTradEpreuve.size());
+		
+		
 		/*
 		 * Creation de la liste contenant toutes les lignes du fichier cs
 		 * 
@@ -63,40 +76,44 @@ public class Application {
 		EntityTransaction trans = entMan.getTransaction();
 		// trans.begin();
 
+		
+		
+		
+		
+		
 		/*
 		 * Instanciation de la variable qui contiendra tou arguments
 		 */
 
-		for (int i = 0; i < 300; i++) {
+		for (int i = 0; i < 200; i++) {
 			trans.begin();
 			// if (i < linesPays.size()) {
 
 			// }
-
 			Athlete athlete = Splitteur.ajouterAthlete(lines.get(i));
 			athlete = InsertionBDD.ajouterAthlete(entMan, athlete);
 			// athlete.getNationalites().add(pays);
 
 			Pays pays = Splitteur.ajouterPays(lines.get(i));
-			pays = InsertionBDD.ajouterPays(entMan, pays);
+			pays = InsertionBDD.ajouterPays(entMan, pays, athlete);
 			System.out.println("avant ajout" + " " + pays.getMembres());
 			System.out.println(athlete);
 			// pays.getMembres().add(athlete);
-			if (!pays.getMembres().contains(athlete)) {
-				pays.getMembres().add(athlete);
-			}
+//			if (!pays.getMembres().contains(athlete)) {
+//				pays.getMembres().add(athlete);
+//			}
 			// System.out.println("apres ajout et avant supp doubon"+" "+pays.getMembres());
 			// Doublon.supprimerAthlete(pays.getMembres());
 			System.out.println("apres supp doubon" + " " + pays.getMembres());
 
 			Equipe equipe = Splitteur.ajouterEquipe(lines.get(i));
-			equipe = InsertionBDD.ajouterEquipe(entMan, equipe);
+			equipe = InsertionBDD.ajouterEquipe(entMan, equipe, athlete);
 			// System.out.println("avant ajout"+" "+equipe.getAthletes());
 			// System.out.println(athlete);
 			// System.out.println(equipe.getAthletes().contains(athlete));
-			if (!equipe.getAthletes().contains(athlete)) {
-				equipe.getAthletes().add(athlete);
-			}
+//			if (!equipe.getAthletes().contains(athlete)) {
+//				equipe.getAthletes().add(athlete);
+//			}
 			// equipe.getAthletes().add(athlete);
 			// Doublon.supprimerAthlete(equipe.getAthletes());
 			// System.out.println("apres supp doubon"+" "+equipe.getAthletes());
@@ -104,7 +121,7 @@ public class Application {
 			// Doublon.supprimerAthlete(equipe.getAthletes());
 
 			Sport sport = Splitteur.ajouterSport(lines.get(i));
-			InsertionBDD.ajouterSport(entMan, sport);
+			sport =  InsertionBDD.ajouterSport(entMan, sport);
 
 			SessionJO jO = Splitteur.ajouterJO(lines.get(i));
 			// InsertionBDD.ajouterEquipeJO(entMan, equipe, jO);
@@ -112,22 +129,21 @@ public class Application {
 			// InsertionBDD.ajouterJO(entMan, jO, equipe);
 			System.out.println(jO.getLibelle() + " " + jO.getId());
 			System.out.println(equipe.getLibelle() + " " + equipe.getId());
-			jO = InsertionBDD.extraireJO(entMan, jO);
+			jO = InsertionBDD.extraireJO(entMan, jO, sport, equipe);
 			// InsertionBDD.ajouterEquipeJO(entMan, equipe, jO);
 			// jO.getEquipes();
 			System.out.println(jO.getEquipes());
-			System.out.println(jO.getEquipes().contains(equipe));
 			// jO.getEquipes().add(equipe);//maitre
 			// jO.getSports().add(sport);
 			System.out.println(lines.get(i));
 			System.out.println(jO.getEquipes().contains(equipe));
 
-			if (!jO.getSports().contains(sport)) {
-				jO.getSports().add(sport);
-			}
-			if (!jO.getEquipes().contains(equipe)) {
-				jO.getEquipes().add(equipe);
-			}
+//			if (!jO.getSports().contains(sport)) {
+//				jO.getSports().add(sport);
+//			}
+//			if (!jO.getEquipes().contains(equipe)) {
+//				jO.getEquipes().add(equipe);
+//			}
 
 			// Doublon.supprimerEquipe(jO.getEquipes());
 			// Doublon.supprimerSport(jO.getSports());
@@ -144,16 +160,34 @@ public class Application {
 			Epreuve epreuve = Splitteur.ajouterEpreuve(lines.get(i));
 			// epreuve.setSport(sport);
 			InsertionBDD.ajouterEpreuve(entMan, epreuve, sport);
-
+		
 			Medaille medaille = Splitteur.ajouterMedaille(lines.get(i));
 //			medaille.setjO(jO);
 //			medaille.setEpreuve(epreuve);
-			medaille = InsertionBDD.ajouterMedaille(entMan, medaille, jO, epreuve);
-			medaille.getChampions().add(athlete);
+			medaille = InsertionBDD.ajouterMedaille(entMan, medaille, jO, epreuve, athlete);
+			//medaille.getChampions().add(athlete);
 
 			trans.commit();
 		}
 
+		
+		for (int i = 0; i < linesTradEpreuve.size(); i++) {
+			trans.begin();
+			
+//			TraductionEpreuve tradEpreuve = Splitteur.ajouterTrad(linesTradSport.get(i));
+//			InsertionBDD.ajouterTradEpreuve(entMan, tradEpreuve);
+			
+			TraductionEpreuve tradEpreuve = Splitteur.ajouterTradEpreuve(linesTradEpreuve.get(i));
+			InsertionBDD.ajouterTradEpreuve(entMan, tradEpreuve);
+			
+			if (i < linesTradSport.size()) {
+			TraductionSport tradSport = Splitteur.ajouterTradSport(linesTradSport.get(i));
+			InsertionBDD.ajouterTradSport(entMan, tradSport);
+			}	
+				
+			trans.commit();
+		}
+		
 		// trans.commit();
 	}
 }

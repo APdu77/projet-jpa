@@ -24,7 +24,7 @@ public class Sport {
 	@OneToMany(mappedBy="sport")
 	private	List<Epreuve> epreuves = new ArrayList<Epreuve>();
 	
-	@OneToMany(mappedBy="libSport")
+	@OneToMany(mappedBy="tradSport")
 	private	List<TraductionSport> langues = new ArrayList<TraductionSport>();
 	
 	public Sport() {

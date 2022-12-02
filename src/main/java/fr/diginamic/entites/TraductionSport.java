@@ -1,28 +1,33 @@
 package fr.diginamic.entites;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
-@Table(name="TRADUCTION")
+@Table(name="TRADUCTION_SPORT")
 public class TraductionSport {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@Transient
 	private String libelleInt;
+	@Id
 	private String libelleFr;
 	
 	@ManyToOne
 	@JoinColumn(name="SPORT_ID")
-	private Sport libSport;
+	private Sport tradSport;
 
 	public TraductionSport() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public TraductionSport(String libelleInt, String libelleFr) {
+		super();
+		this.libelleInt = libelleInt;
+		this.libelleFr = libelleFr;
 	}
 
 	public String getLibelleInt() {
@@ -41,12 +46,12 @@ public class TraductionSport {
 		this.libelleFr = libelleFr;
 	}
 
-	public Sport getLibSport() {
-		return libSport;
+	public Sport getTradSport() {
+		return tradSport;
 	}
 
-	public void setLibSport(Sport libSport) {
-		this.libSport = libSport;
+	public void setTradSport(Sport tradSport) {
+		this.tradSport = tradSport;
 	}
 
 	

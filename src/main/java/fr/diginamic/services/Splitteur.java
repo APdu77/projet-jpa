@@ -11,6 +11,8 @@ import fr.diginamic.entites.Medaille;
 import fr.diginamic.entites.Pays;
 import fr.diginamic.entites.SessionJO;
 import fr.diginamic.entites.Sport;
+import fr.diginamic.entites.TraductionEpreuve;
+import fr.diginamic.entites.TraductionSport;
 
 /**
  * Permet de constituer nos objets progressivement a partir des lignes des
@@ -175,7 +177,6 @@ public class Splitteur {
 		return epreuve;
 	}
 
-	
 	/**
 	 * Ajoute une ligne contenant un objet Medaille
 	 * 
@@ -184,7 +185,7 @@ public class Splitteur {
 	public static Medaille ajouterMedaille(String ligne) {
 
 		String[] tab = ligne.split(";", 0);
-		
+
 		String type = null;
 		if (tab[14].equals("Gold")) {
 			type = "Or";
@@ -196,4 +197,55 @@ public class Splitteur {
 		// On cree maintenant l'objet avec tous ses attributs et on le retourne
 		return new Medaille(type);
 	}
+
+	public static TraductionSport ajouterTradSport(String ligne) {
+
+		// on stocke chaque ligne du fichier des pays dans une liste
+		// List<String> lignesTrad =
+		// Traitement.extraireLignesWin("./src/main/resources/liste des sports.csv");
+
+		// On splitte la ligne du fichier principal
+		String[] mainTab = ligne.split(";", 0);
+		// on recupere la "portion" qui contient le CIO du Pays
+		String nomInt = mainTab[0];
+		// on gere l'exception de la cellule vide dans le fichier des traduction
+		String frTrad = "Patinage de vitesse piste courte";
+		if (!mainTab[0].equals("Short Track Speed Skating")) {
+			frTrad = mainTab[1];
+		}
+
+		// On cree maintenant l'objet avec tous ses attributs et on le retourne
+		return new TraductionSport(nomInt, frTrad);
+	}
+
+	public static TraductionEpreuve ajouterTradEpreuve(String ligne) {
+
+		// on stocke chaque ligne du fichier des pays dans une liste
+		// List<String> lignesTrad =
+		// Traitement.extraireLignesWin("./src/main/resources/liste des sports.csv");
+//System.out.println(ligne);
+		// On splitte la ligne du fichier principal
+		String[] mainTab = ligne.split(";", 0);
+		// on recupere la "portion" qui contient le CIO du Pays
+		String nomInt = null;
+		String frTrad = null;
+		char categorie = 0;
+		if (mainTab.length != 0) {
+			nomInt = mainTab[0];
+			frTrad = mainTab[1];
+			// char categorie = 'H';
+			if (nomInt.contains("Men") || nomInt.contains(" men") || nomInt.contains("Gundersen")) {
+				categorie = 'H';
+			} else if (nomInt.contains("Women") || nomInt.contains("women")) {
+				categorie = 'F';
+			} else if (nomInt.contains("Mixed") == true || nomInt.contains("mixed") || nomInt.contains("Eventing")|| nomInt.contains("One Open") || nomInt.contains("Two Open")) {
+				categorie = 'M';
+			}
+		}
+		System.out.println(nomInt + "--------" + frTrad + "--------" + categorie);
+		// On cree maintenant l'objet avec tous ses attributs et on le retourne
+		return new TraductionEpreuve(nomInt, frTrad, categorie);
+
+	}
+
 }

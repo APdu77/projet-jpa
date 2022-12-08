@@ -11,32 +11,54 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * Représente un Sport
+ * 
+ * @author rousseau.DIGINAMIC
+ *
+ */
 @Entity
 @Table(name="SPORTS")
 public class Sport {
 
+	/** id : int auto-incremente */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	/** libelle international : String */
 	@Column(unique=true)
 	private String libelleInt;
 	
+	/**
+	 * Relation esclave 1ToMany avec la classe Epreuve
+	 */
 	@OneToMany(mappedBy="sport")
 	private	List<Epreuve> epreuves = new ArrayList<Epreuve>();
 	
-	@OneToMany(mappedBy="tradSport")
+	/**
+	 * Relation esclave 1ToMany avec la classe TraductionSport
+	 */
+	@OneToMany(mappedBy="sportTraduit")
 	private	List<TraductionSport> langues = new ArrayList<TraductionSport>();
 	
+	/**
+	 * Constructeur sans argument
+	 */
 	public Sport() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
+	/**
+	 * Constructeur avec arguments
+	 */
 	public Sport(String libelleInt) {
 		super();
 		this.libelleInt = libelleInt;
 	}
 
+	/**
+	 * Redefinition de la methode .equals
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
@@ -44,6 +66,11 @@ public class Sport {
 				  ((Sport)obj).getLibelleInt().equals(libelleInt);
 	}
 
+	/**
+	 * Getters and Setters
+	 * 
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}

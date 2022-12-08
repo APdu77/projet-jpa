@@ -1,0 +1,3 @@
+- resoudre le probleme du format "YEAR" de SessionJO qui apparait en base "[BLOB - 42 o]"
+
+- tests unitaires non fonctionnels

@@ -14,34 +14,58 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * Représente un Athlete
+ * 
+ * @author rousseau.DIGINAMIC
+ *
+ */
 @Entity
 @Table(name = "ATHLETES")
 public class Athlete {
 
+	/** id : int auto-incremente */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	/** nom : String */
 	private String nom;
+	/** genre : char (H ou F) */
 	private char genre;
 	@Column(nullable = true)
+	/** age : byte */
 	private byte age;
 	@Column(nullable = true)
+	/** taille : short */
 	private short taille;
 	@Column(nullable = true)
+	/** poids : double */
 	private double poids;
+	/** cio : String */
 	private String cio;
 
-//	@ManyToMany
-//	@JoinTable(name = "ATHL_PAYS", joinColumns = @JoinColumn(name = "ID_ATHL", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "CODE_PAYS", referencedColumnName = "CIO"))
-//	private List<Pays> nationalites = new ArrayList<Pays>();
-
+	/**
+	 * Relation esclave ManyToMany avec la classe Medaille
+	 */
 	@ManyToMany(mappedBy = "champions")
 	private List<Medaille> medailles = new ArrayList<Medaille>();
 
+	/**
+	 * Relation esclave ManyToMany avec la classe Equipe
+	 */
+	@ManyToMany(mappedBy = "athletes")
+	private List<Equipe> equipes;
+	
+	/**
+	 * Constructeur sans argument
+	 */
 	public Athlete() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Constructeur avec arguments
+	 */
 	public Athlete(String nom, char genre, byte age, short taille, double poids, String cio) {
 		super();
 		this.nom = nom;
@@ -52,17 +76,28 @@ public class Athlete {
 		this.cio = cio;
 	}
 
+	/**
+	 * Redefinition de la methode .equals
+	 */
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof Athlete) && ((Athlete) obj).getNom().equals(nom) ;
+		return (obj instanceof Athlete) && ((Athlete) obj).getNom().equals(nom);
 	}
 
+	/**
+	 * Redefinition de la methode .toString
+	 */
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		return nom;
 	}
-	
+
+	/**
+	 * Getters and Setters
+	 * 
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}
@@ -123,9 +158,4 @@ public class Athlete {
 		return medailles;
 	}
 
-//	public List<Pays> getNationalites() {
-//		return nationalites;
-//	}
-
-	
 }

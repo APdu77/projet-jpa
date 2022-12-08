@@ -16,7 +16,7 @@ import fr.diginamic.entites.TraductionEpreuve;
 import fr.diginamic.entites.TraductionSport;
 
 /**
- * Permet d'inserer chaque objet cree par la classe Splitteur en BdD fichiers
+ * Permet d'inserer chaque objet cree par la classe Splitteur en BdD
  * 
  * @author Rousseau.DIGINAMIC
  *
@@ -33,6 +33,7 @@ public class InsertionBDD {
 	 * 
 	 * @param EntityManager en relation avec la BdD
 	 * @param objet         qu'on veut persister si elle n'est pas dans la BdD
+	 * @return objet SessionJO
 	 */
 	public static SessionJO extraireJO(EntityManager em, SessionJO jo, Sport sport, Equipe equipe) {
 		// La methode ne retourne rien car son resultat n'est pas reutilise dans l'Appli
@@ -79,6 +80,7 @@ public class InsertionBDD {
 	 * 
 	 * @param EntityManager en relation avec la BdD
 	 * @param objet         qu'on veut persister si elle n'est pas dans la BdD
+	 * @return objet Athlete
 	 */
 	public static Athlete ajouterAthlete(EntityManager em, Athlete athlete) {
 
@@ -149,6 +151,7 @@ public class InsertionBDD {
 	 * 
 	 * @param EntityManager en relation avec la BdD
 	 * @param objet         qu'on veut persister si elle n'est pas dans la BdD
+	 * @return objet Pays
 	 */
 	public static Pays ajouterPays(EntityManager em, Pays pays, Athlete athlete) {
 
@@ -172,6 +175,7 @@ public class InsertionBDD {
 	 * 
 	 * @param EntityManager en relation avec la BdD
 	 * @param objet         qu'on veut persister si elle n'est pas dans la BdD
+	 * @return objet Equipe
 	 */
 	public static Equipe ajouterEquipe(EntityManager em, Equipe equipe, Athlete athlete) {
 
@@ -198,19 +202,22 @@ public class InsertionBDD {
 	 * @param Medaille      qu'on veut persister si elle n'est pas dans la BdD
 	 * @param SessionJO     que l'on veut associer a la Medaille
 	 * @param Epreuve       que l'on veut associer a la Medaille
+	 * @return objet Medaille
 	 */
 	public static Medaille ajouterMedaille(EntityManager em, Medaille medaille, SessionJO jO, Epreuve epreuve,
 			Athlete athlete) {
 
 		TypedQuery<Medaille> query = em.createQuery(
 				"SELECT m FROM Medaille m WHERE m.type = ?1 AND m.jO = ?2 AND m.epreuve = ?3", Medaille.class);
+		// le caractere unique d'une medaille est defini par la combinaison de ces 3
+		// parametres
 		query.setParameter(1, medaille.getType());
 		query.setParameter(2, jO);
 		query.setParameter(3, epreuve);
 
 		List<Medaille> medailles = query.getResultList();
 
-		if (medailles.isEmpty() && medaille.getType() == null) {
+		if (medaille.getType() == null) {
 			return medaille;
 		} else if (medailles.isEmpty()) {
 			// j'attribue a Medaille sa SessionJO & son Epreuve avant de la persister en BdD
@@ -225,31 +232,59 @@ public class InsertionBDD {
 		return medaille;
 	}
 
+	/**
+	 * Persiste une TraductionSport en base si elle n'y est pas deja et lui associe
+	 * le Sport auquel elle correspond
+	 * 
+	 * @param EntityManager en relation avec la BdD
+	 * @param Traduction    que l'on veut persister si elle n'est pas dans la BdD
+	 */
 	public static void ajouterTradSport(EntityManager em, TraductionSport traductionSport) {
-		//System.out.println(traductionSport.getLibelleInt());
+
+		// infos: fichier1= fichier principal et fichier2=fichier des sports traduits
+		// Requete pour savoir si le sport de fichier2 existe dans la table Sport en BdD
 		TypedQuery<Sport> query = em.createQuery("SELECT s FROM Sport s WHERE s.libelleInt = ?1", Sport.class);
 		query.setParameter(1, traductionSport.getLibelleInt());
+		List<Sport> sportBase = query.getResultList();
 
-		List<Sport> tradBase = query.getResultList();
+		// Requete pour savoir si le sport de fichier2 existe dans la table
+		// TraductionSport en BdD
+		TypedQuery<TraductionSport> query2 = em.createQuery("SELECT t FROM TraductionSport t WHERE t.libelleInt = ?1",
+				TraductionSport.class);
+		query2.setParameter(1, traductionSport.getLibelleInt());
+		List<TraductionSport> sportTradBase = query2.getResultList();
 
-		if (!tradBase.isEmpty()) {
-			//System.out.println(tradBase.get(0).getLibelleInt());
-			traductionSport.setTradSport(tradBase.get(0));
+		// on cherche a savoir si le sport existe aux JO (toutes SessionJO confondues)
+		// et s'il n'a pas deja ete persiste avec sa traduction en BdD
+		if (!sportBase.isEmpty() && sportTradBase.isEmpty()) {
 			em.persist(traductionSport);
+			traductionSport.setSportTraduit(sportBase.get(0));
 		}
 	}
 
+	/**
+	 * Persiste une TraductionEpreuve en base si elle n'y est pas deja et lui
+	 * associe l'Epreuve a laquelle elle correspond, non fonctionnelle car les
+	 * libelles des 2 fichiers sont differents seules les quelques libelles qui
+	 * coincident seront persistes en BdD (a resoudre)
+	 * 
+	 * @param EntityManager en relation avec la BdD
+	 * @param Traduction    que l'on veut persister si elle n'est pas dans la BdD
+	 */
 	public static void ajouterTradEpreuve(EntityManager em, TraductionEpreuve traductionEpreuve) {
-		//System.out.println(traductionEpreuve.getLibelleInt());
-		TypedQuery<Epreuve> query = em.createQuery("SELECT e FROM Epreuve e WHERE e.libelleInt LIKE ?1", Epreuve.class);
-		//query.setParameter(1, traductionEpreuve.getLibelleInt());
-		query.setParameter(1, "Combined");
-		List<Epreuve> tradBase = query.getResultList();
 
-		if (!tradBase.isEmpty()) {
-			System.out.println(tradBase.get(0).getLibelleInt()+"---------------------------------------");
-			traductionEpreuve.setTradEpreuve(tradBase.get(0));
+		TypedQuery<Epreuve> query = em.createQuery("SELECT e FROM Epreuve e WHERE e.libelleInt = ?1", Epreuve.class);
+		query.setParameter(1, traductionEpreuve.getLibelleInt());
+		List<Epreuve> epreuveBase = query.getResultList();
+
+		TypedQuery<TraductionEpreuve> query2 = em
+				.createQuery("SELECT t FROM TraductionEpreuve t WHERE t.libelleInt = ?1", TraductionEpreuve.class);
+		query2.setParameter(1, traductionEpreuve.getLibelleInt());
+		List<TraductionEpreuve> epreuveTradBase = query2.getResultList();
+
+		if (!epreuveBase.isEmpty() && epreuveTradBase.isEmpty()) {
 			em.persist(traductionEpreuve);
+			traductionEpreuve.setEpreuveTraduite(epreuveBase.get(0));
 		}
 	}
 

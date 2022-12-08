@@ -7,29 +7,51 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+/**
+ * Représente une Traduction de libelle de Sport
+ * 
+ * @author rousseau.DIGINAMIC
+ *
+ */
 @Entity
-@Table(name="TRADUCTION_SPORT")
+@Table(name = "TRADUCTION_SPORT")
 public class TraductionSport {
-	
-	@Transient
+
+	/** libelle international : String */
+	// @Transient
 	private String libelleInt;
+	/** libelle francais : String */
 	@Id
 	private String libelleFr;
-	
-	@ManyToOne
-	@JoinColumn(name="SPORT_ID")
-	private Sport tradSport;
 
+	/**
+	 * Relation maitre ManyTo1 avec la classe Sport
+	 */
+	@ManyToOne
+	@JoinColumn(name = "SPORT_ID")
+	private Sport sportTraduit;
+
+	/**
+	 * Constructeur sans argument
+	 */
 	public TraductionSport() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Constructeur avec arguments
+	 */
 	public TraductionSport(String libelleInt, String libelleFr) {
 		super();
 		this.libelleInt = libelleInt;
 		this.libelleFr = libelleFr;
 	}
 
+	/**
+	 * Getters and Setters
+	 * 
+	 * @return
+	 */
 	public String getLibelleInt() {
 		return libelleInt;
 	}
@@ -46,15 +68,12 @@ public class TraductionSport {
 		this.libelleFr = libelleFr;
 	}
 
-	public Sport getTradSport() {
-		return tradSport;
+	public Sport getSportTraduit() {
+		return sportTraduit;
 	}
 
-	public void setTradSport(Sport tradSport) {
-		this.tradSport = tradSport;
+	public void setSportTraduit(Sport sportTraduit) {
+		this.sportTraduit = sportTraduit;
 	}
 
-	
-	
-	
 }

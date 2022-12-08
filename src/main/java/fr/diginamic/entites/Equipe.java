@@ -11,48 +11,77 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+/**
+ * Représente une Equipe
+ * 
+ * @author rousseau.DIGINAMIC
+ *
+ */
 @Entity
 @Table(name = "EQUIPES")
 public class Equipe {
 
+	/** id : int auto-incremente */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(unique=true)
+	/** libelle : String */
+	@Column(unique = true)
 	private String libelle;
 
+	/**
+	 * Relation maitre ManyToMany avec la classe Athlete
+	 */
 	@ManyToMany
 	@JoinTable(name = "ATHL_EQU", joinColumns = @JoinColumn(name = "ID_EQU", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ID_ATHL", referencedColumnName = "ID"))
 	private List<Athlete> athletes = new ArrayList<Athlete>();
 
+	/**
+	 * Relation esclave ManyToMany avec la classe SessionJO
+	 */
 	@ManyToMany(mappedBy = "equipes")
 	private List<SessionJO> sessionsJO;
 
+	/**
+	 * Constructeur sans argument
+	 */
 	public Equipe() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Constructeur avec arguments
+	 */
 	public Equipe(String libelle) {
 		super();
 		this.libelle = libelle;
 	}
 
+	/**
+	 * Redefinition de la methode toString
+	 */
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		return libelle;
 	}
 
+	/**
+	 * Redefinition de la methode .equals
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
-		return (obj instanceof Equipe) && 
-				  ((Equipe)obj).getLibelle().equals(libelle);
+		return (obj instanceof Equipe) && ((Equipe) obj).getLibelle().equals(libelle);
 	}
-	
+
+	/**
+	 * Getters and Setters
+	 * 
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}

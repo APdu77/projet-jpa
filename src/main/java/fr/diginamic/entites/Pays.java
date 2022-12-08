@@ -13,35 +13,55 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+/**
+ * Représente un Pays
+ * 
+ * @author rousseau.DIGINAMIC
+ *
+ */
 @Entity
-@Table(name="PAYS")
+@Table(name = "PAYS")
 public class Pays {
 
+	/** code CIO : String */
 	@Id
-	//@GeneratedValue(strategy = GenerationType.TABLE)
-	@Column(unique=true)
+	// @GeneratedValue(strategy = GenerationType.TABLE)
+	@Column(unique = true)
 	private String cio;
+	/** code ISO : String */
 	private String iso;
+	/** libelle ineternational : String */
 	private String libelleInt;
+	/** libelle francais : String */
 	private String libelleFr;
+	/** code CIO obsolete : booleen (true si obsolete) */
 	private boolean obsol;
-	
+
+	/**
+	 * Relation maitre ManyToMany avec la classe Athlete
+	 */
 	@ManyToMany
-	@JoinTable(name="ATHL_PAYS",
-	joinColumns=@JoinColumn(name="CODE_PAYS", referencedColumnName="CIO"),
-	inverseJoinColumns=@JoinColumn ( name="ID_ATHL", referencedColumnName="ID")
-	)
-	private	List<Athlete> membres = new ArrayList<Athlete>();
-	
+	@JoinTable(name = "ATHL_PAYS", joinColumns = @JoinColumn(name = "CODE_PAYS", referencedColumnName = "CIO"), inverseJoinColumns = @JoinColumn(name = "ID_ATHL", referencedColumnName = "ID"))
+	private List<Athlete> membres = new ArrayList<Athlete>();
+
+	/**
+	 * Constructeur sans argument
+	 */
 	public Pays() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Constructeur avec un seul argument
+	 */
 	public Pays(String cio) {
 		super();
 		this.cio = cio;
 	}
-	
+
+	/**
+	 * Constructeur avec arguments
+	 */
 	public Pays(String cio, String iso, String libelleInt, String libelleFr, boolean obsol) {
 		super();
 		this.cio = cio;
@@ -51,6 +71,11 @@ public class Pays {
 		this.obsol = obsol;
 	}
 
+	/**
+	 * Getters and Setters
+	 * 
+	 * @return
+	 */
 	public String getCio() {
 		return cio;
 	}
@@ -95,6 +120,4 @@ public class Pays {
 		return membres;
 	}
 
-	
-	
 }

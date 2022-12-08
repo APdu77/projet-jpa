@@ -9,28 +9,44 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+/**
+ * Représente une Traduction de libelle d'Epreuve
+ * 
+ * @author rousseau.DIGINAMIC
+ *
+ */
 @Entity
-@Table(name="TRADUCTION_EPREUVE")
+@Table(name = "TRADUCTION_EPREUVE")
 public class TraductionEpreuve {
-	
+
+	/** libelle international : String */
 	@Id
 	private String libelleInt;
+	/** libelle francais : String */
 	private String libelleFr;
+	/** categorie (H, F ou M) : char */
+	@Transient
 	private char categorie;
-	
+
+	/**
+	 * Relation maitre ManyTo1 avec la classe Epreuve
+	 */
 	@ManyToOne
-	@JoinColumn(name="EPREUVE_ID")
-	private Epreuve tradEpreuve;
+	@JoinColumn(name = "EPREUVE_ID")
+	private Epreuve epreuveTraduite;
 
-	@OneToMany(mappedBy="tradEpreuve")
-	private	List<TraductionEpreuve> langues = new ArrayList<TraductionEpreuve>();
-
-	
+	/**
+	 * Constructeur sans arguments
+	 */
 	public TraductionEpreuve() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Constructeur avec arguments
+	 */
 	public TraductionEpreuve(String libelleInt, String libelleFr, char categorie) {
 		super();
 		this.libelleInt = libelleInt;
@@ -38,6 +54,11 @@ public class TraductionEpreuve {
 		this.categorie = categorie;
 	}
 
+	/**
+	 * Getters and Setters
+	 * 
+	 * @return
+	 */
 	public String getLibelleInt() {
 		return libelleInt;
 	}
@@ -54,12 +75,12 @@ public class TraductionEpreuve {
 		this.libelleFr = libelleFr;
 	}
 
-	public Epreuve getTradEpreuve() {
-		return tradEpreuve;
+	public Epreuve getEpreuveTraduite() {
+		return epreuveTraduite;
 	}
 
-	public void setTradEpreuve(Epreuve tradEpreuve) {
-		this.tradEpreuve = tradEpreuve;
+	public void setEpreuveTraduite(Epreuve epreuveTraduite) {
+		this.epreuveTraduite = epreuveTraduite;
 	}
 
 	public char getType() {
@@ -70,4 +91,6 @@ public class TraductionEpreuve {
 		this.categorie = categorie;
 	}
 
+	
+	
 }
